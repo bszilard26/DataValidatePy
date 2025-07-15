@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+*.log
+
+# Pytest
+.pytest_cache/
+
+# Environment
+.env
+
+# VSCode settings (if you're using VSCode)
+.vscode/
+
+# MacOS hidden files
+.DS_Store
