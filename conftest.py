@@ -1,8 +1,14 @@
+# conftest.py
+import warnings
+from urllib3.exceptions import NotOpenSSLWarning
+
+# ignore that LibreSSL/OpenSSL mismatch warning
+warnings.filterwarnings("ignore", category=NotOpenSSLWarning)
+
 import os
 import pytest
 from dotenv import load_dotenv
 
-# Load .env from the project root
 load_dotenv()
 
 @pytest.fixture(scope="session")

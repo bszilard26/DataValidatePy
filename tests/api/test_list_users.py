@@ -2,13 +2,12 @@ import pytest
 import requests
 import time
 
-# Test class - groups related tests together
-# @pytest.mark decorators are used to categorize tests for filtering
+# Test class for user listing API endpoints
 @pytest.mark.api  # Mark as API test - can run with: pytest -m api
 @pytest.mark.smoke  # Mark as smoke test - can run with: pytest -m smoke
 class TestListUsers:
 
-    # Parametrized test - runs the same test with different input values
+    # Test different page numbers return correct page data
     @pytest.mark.parametrize("page,expected_page", [
         (1, 1),
         (2, 2)
@@ -21,16 +20,17 @@ class TestListUsers:
         assert response.status_code == 200
         data = response.json()
 
-        # Validate structure
+        # Validate response structure
         assert "page" in data
         assert "data" in data
         assert "total" in data
         assert "total_pages" in data
 
-        # Validate expected data
+        # Validate page number and data type
         assert data["page"] == expected_page
         assert isinstance(data["data"], list)
 
+    # Test data presence for valid vs invalid pages
     @pytest.mark.parametrize("page,should_have_data", [
         (1, True),
         (2, True),
@@ -44,11 +44,13 @@ class TestListUsers:
         assert response.status_code == 200
         data = response.json()
 
+        # Check if data array contains users based on page validity
         if should_have_data:
             assert len(data["data"]) > 0
         else:
             assert len(data["data"]) == 0
 
+    # Performance test - measure API response time
     @pytest.mark.slow
     @pytest.mark.integration
     def test_response_time(self, base_url, common_headers):
@@ -58,8 +60,9 @@ class TestListUsers:
         end_time = time.time()
 
         assert response.status_code == 200
-        assert (end_time - start_time) < 5
+        assert (end_time - start_time) < 5  # Should respond within 5 seconds
 
+    # Error handling test - verify 404 for invalid endpoints
     @pytest.mark.error_handling
     def test_invalid_endpoint(self, base_url, common_headers):
         """Test handling of invalid endpoint"""
