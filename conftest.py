@@ -1,14 +1,15 @@
 # conftest.py
 import warnings
-from urllib3.exceptions import NotOpenSSLWarning
 
-# ignore that LibreSSL/OpenSSL mismatch warning
-warnings.filterwarnings("ignore", category=NotOpenSSLWarning)
+try:
+    from urllib3.exceptions import NotOpenSSLWarning
+    warnings.filterwarnings("ignore", category=NotOpenSSLWarning)
+except ImportError:
+    pass
 
 import os
 import pytest
 from dotenv import load_dotenv
-
 load_dotenv()
 
 @pytest.fixture(scope="session")
@@ -22,3 +23,7 @@ def common_headers():
         "User-Agent": "pytest-api-test/1.0",
         "x-api-key": os.getenv("API_KEY")
     }
+
+@pytest.fixture
+def timeout():
+    return int(os.getenv("TIMEOUT", "30"))
