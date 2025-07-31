@@ -61,7 +61,7 @@ class TestListUsers:
         params = {"page": 1, "per_page": per_page}
         response = requests.get(base_url, params=params, headers=common_headers)
         assert response.status_code == 200
-        data = response.json()
+        data = response.json()    
         assert len(data["data"]) == expected_count
 
     # Test boundary values for per_page parameter
